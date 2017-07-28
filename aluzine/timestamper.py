@@ -1,0 +1,2 @@
+class TimeStamper(object):
+    pass
