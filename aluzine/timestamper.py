@@ -1,3 +1,4 @@
+from aluzine.config import domain
 from aluzine.config import login
 from aluzine.config import password
 
@@ -11,9 +12,9 @@ class TimeStamperException(Exception):
 
 
 class TimeStamper(object):
-    BASE_URL = 'https://hiventy.bodet-software.com/open/login'
-    LOGIN_URL = 'https://hiventy.bodet-software.com/open/j_spring_security_check'  # noqa
-    BADGING_URL = 'https://hiventy.bodet-software.com/open/webgtp/badge'
+    BASE_URL = '%s/open/login'
+    LOGIN_URL = '%s/open/j_spring_security_check'
+    BADGING_URL = '%s/open/webgtp/badge'
 
     CREDENTIALS_FORM = {
         'username': '',
@@ -35,6 +36,11 @@ class TimeStamper(object):
     def __init__(self):
         self.login = login
         self.password = password
+        self.domain = domain
+
+        self.BASE_URL = self.BASE_URL % self.domain
+        self.LOGIN_URL = self.LOGIN_URL % self.domain
+        self.BADGING_URL = self.BADGING_URL % self.domain
 
     def ping(self):
         with requests.Session() as s:

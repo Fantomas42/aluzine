@@ -22,6 +22,7 @@ Create a file containing your credentials in this form: ::
   [user]
   login: YOURLOGIN
   password: YOURPASSWORD
+  domain: http://domain.com
 
 Automation
 ==========
