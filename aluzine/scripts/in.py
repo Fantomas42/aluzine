@@ -10,4 +10,4 @@ def cmdline():
     lock.create()
 
     ts = TimeStamper()
-    return ts.ping()
+    return not ts.ping()

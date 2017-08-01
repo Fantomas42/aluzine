@@ -25,4 +25,4 @@ def cmdline():
         sleep(randint(0, random_range) * 60)
 
     ts = TimeStamper()
-    return ts.ping()
+    return not ts.ping()
