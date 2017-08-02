@@ -27,9 +27,10 @@ Create a file containing your credentials in this form: ::
 Automation
 ==========
 
-In ~/.profile add this line to time stamp your arrival when login: ::
+In ~/.profile add this script to time stamp your arrival when
+unlocking your screen: ::
 
-  aluz-in
+  nohup ./unlock.sh &
 
 In your crontabs add this line, to time stamp your leaving: ::
 
