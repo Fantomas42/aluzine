@@ -19,11 +19,17 @@ def cmdline():
         action='store_true',
         help='By pass lock checking')
 
+    parser.add_argument(
+        '--check-previous',
+        action='store_true',
+        help='By pass lock checking and check previous ping in the day')
+
     args = parser.parse_args()
     no_lock = args.no_lock
+    check_previous = args.check_previous
     random_range = args.random_range
 
-    if not no_lock:
+    if not (no_lock or check_previous):
         lock = Lock()
         if not lock.exist():
             return False
@@ -32,4 +38,4 @@ def cmdline():
         sleep(randint(0, random_range) * 60)
 
     ts = TimeStamper()
-    return not ts.ping()
+    return not ts.ping(check_previous)
