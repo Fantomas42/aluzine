@@ -63,7 +63,7 @@ class TimeStamper(object):
         self.BADGING_URL = self.BADGING_URL % self.domain
         self.DECLARATION_URL = self.DECLARATION_URL % self.domain
 
-    def ping(self, check_previous=False):
+    def ping(self):
         with requests.Session() as s:
             s.headers.update({'User-Agent': 'Aluzine v1.0'})
 
@@ -78,18 +78,6 @@ class TimeStamper(object):
             token = self.get_token(logging.text)
             jeton = self.get_jeton(logging.text)
 
-            if check_previous:
-                self.DECLARATION_FORM['_csrf_bodet'] = token
-                declaration = s.post(
-                    self.DECLARATION_URL, data=self.DECLARATION_FORM
-                )
-                previous_declaration = self.get_previous_declaration(
-                    declaration.text
-                )
-
-                if not previous_declaration:
-                    return False
-
             self.BADGING_FORM['_csrf_bodet'] = token
             self.BADGING_FORM['JETON_INTRANET'] = jeton
 
@@ -99,6 +87,30 @@ class TimeStamper(object):
                 return False
 
             return True
+
+    def check_previous(self):
+        with requests.Session() as s:
+            s.headers.update({'User-Agent': 'Aluzine v1.0'})
+
+            splash = s.get(self.BASE_URL)
+
+            token = self.get_token(splash.text)
+            self.CREDENTIALS_FORM['_csrf_bodet'] = token
+            self.CREDENTIALS_FORM['username'] = self.login
+            self.CREDENTIALS_FORM['password'] = self.password
+
+            logging = s.post(self.LOGIN_URL, data=self.CREDENTIALS_FORM)
+            token = self.get_token(logging.text)
+
+            self.DECLARATION_FORM['_csrf_bodet'] = token
+            declaration = s.post(
+                self.DECLARATION_URL, data=self.DECLARATION_FORM
+            )
+            previous_declaration = self.get_previous_declaration(
+                declaration.text
+            )
+
+            return previous_declaration
 
     def get_token(self, content):
         soup = BeautifulSoup(content, 'html.parser')

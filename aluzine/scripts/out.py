@@ -38,4 +38,8 @@ def cmdline():
         sleep(randint(0, random_range) * 60)
 
     ts = TimeStamper()
-    return not ts.ping(check_previous)
+    if check_previous:
+        if not ts.check_previous():
+            return 1
+
+    return not ts.ping()
