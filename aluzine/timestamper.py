@@ -16,6 +16,7 @@ class TimeStamperException(Exception):
 class TimeStamper(object):
     BASE_URL = '%s/open/login'
     LOGIN_URL = '%s/open/j_spring_security_check'
+    HOMEPAGE_URL = '%s/open/homepage?ACTION=intranet&asked=1&header=0'
     BADGING_URL = '%s/open/webgtp/badge'
     DECLARATION_URL = '%s/open/global'
 
@@ -62,6 +63,7 @@ class TimeStamper(object):
         self.LOGIN_URL = self.LOGIN_URL % self.domain
         self.BADGING_URL = self.BADGING_URL % self.domain
         self.DECLARATION_URL = self.DECLARATION_URL % self.domain
+        self.HOMEPAGE_URL = self.HOMEPAGE_URL % self.domain
 
     def ping(self):
         with requests.Session() as s:
@@ -74,9 +76,11 @@ class TimeStamper(object):
             self.CREDENTIALS_FORM['username'] = self.login
             self.CREDENTIALS_FORM['password'] = self.password
 
-            logging = s.post(self.LOGIN_URL, data=self.CREDENTIALS_FORM)
-            token = self.get_token(logging.text)
-            jeton = self.get_jeton(logging.text)
+            s.post(self.LOGIN_URL, data=self.CREDENTIALS_FORM)
+            homepage = s.get(self.HOMEPAGE_URL)
+
+            token = self.get_token(homepage.text)
+            jeton = self.get_jeton(homepage.text)
 
             self.BADGING_FORM['_csrf_bodet'] = token
             self.BADGING_FORM['JETON_INTRANET'] = jeton
@@ -114,6 +118,7 @@ class TimeStamper(object):
 
     def get_token(self, content):
         soup = BeautifulSoup(content, 'html.parser')
+
         try:
             value = soup.find('input', {'name': '_csrf_bodet'}).get('value')
         except:
