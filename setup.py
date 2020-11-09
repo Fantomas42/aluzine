@@ -34,7 +34,7 @@ setup(
     license=__license__,
     include_package_data=True,
     zip_safe=False,
-    install_requires=['beautifulsoup4>=4.4',
+    install_requires=['beautifulsoup4==4.4',
                       'requests>=2.18'],
 
     entry_points={
