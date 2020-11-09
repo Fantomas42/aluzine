@@ -18,7 +18,7 @@ class TimeStamper(object):
     LOGIN_URL = '%s/open/j_spring_security_check'
     HOMEPAGE_URL = '%s/open/homepage?ACTION=intranet&asked=1&header=0'
     BADGING_URL = '%s/open/webgtp/badge'
-    DECLARATION_URL = '%s/open/global'
+    DECLARATION_URL = '%s/open/homepage?ACTION=intranet&asked=7&header=0'
 
     CREDENTIALS_FORM = {
         'username': '',
@@ -103,13 +103,9 @@ class TimeStamper(object):
             self.CREDENTIALS_FORM['username'] = self.login
             self.CREDENTIALS_FORM['password'] = self.password
 
-            logging = s.post(self.LOGIN_URL, data=self.CREDENTIALS_FORM)
-            token = self.get_token(logging.text)
+            s.post(self.LOGIN_URL, data=self.CREDENTIALS_FORM)
+            declaration = s.get(self.DECLARATION_URL)
 
-            self.DECLARATION_FORM['_csrf_bodet'] = token
-            declaration = s.post(
-                self.DECLARATION_URL, data=self.DECLARATION_FORM
-            )
             previous_declaration = self.get_previous_declaration(
                 declaration.text
             )
